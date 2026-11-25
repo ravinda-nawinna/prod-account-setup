@@ -77,6 +77,7 @@ function go(step) {
 	}
 	if (step === "tid" && account && account.hasTid) {
 		document.getElementById("tidIntro").textContent = `TID ${account.tid} is already on the account. Continue to People.`;
+		document.getElementById("tidResult").replaceChildren();
 	}
 	if (step === "tid" && account && account.found && !account.hasTid) {
 		document.getElementById("tidIntro").textContent = "The MDM account exists, and it has no TID. The TID has to be the TTC account id.";
@@ -194,14 +195,29 @@ function stepAllowed(step) {
 	return account.hasTid;
 }
 
+function clearStepResults() {
+	["tidResult", "peopleResult", "subscriptionResult"].forEach((id) => {
+		document.getElementById(id).replaceChildren();
+	});
+}
+
 function applyAccount(result) {
+	clearStepResults();
 	if (!result.ok) {
 		showResult("companyResult", result);
 		return;
 	}
 	account = result;
 	if (!result.found) {
-		showResult("companyResult", result);
+		showResult("companyResult", {
+			ok: true,
+			state: "waiting",
+			lines: [
+				result.detail || "MDM has no account for this company number.",
+				"Contact the MDM team with the request below."
+			],
+			message: result.message
+		});
 		go("company");
 		return;
 	}
