@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Prod account setup</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<header>
+		<p class="eyebrow">Production</p>
+		<h1>Prod account setup</h1>
+		<p class="lede">Start from the company number. MDM decides whether the account and its TID are already there.</p>
+	</header>
+	<main>
+		<ol class="stepper">
+			<li data-step="company"><button type="button">1. Company</button></li>
+			<li data-step="tid"><button type="button">2. Account TID</button></li>
+			<li data-step="people"><button type="button">3. People</button></li>
+			<li data-step="subscription"><button type="button">4. Subscription</button></li>
+		</ol>
+		<form id="form">
+			<section data-panel="company">
+				<h2>Company</h2>
+				<p class="hint">The company number is the TPA. <a href="https://tpadmin.transporeon.nil/" target="_blank" rel="noreferrer">Open TP Admin</a></p>
+				<label for="tpa">Company number</label>
+				<input id="tpa" inputmode="numeric" autocomplete="off">
+				<h3>MDM credentials</h3>
+				<label for="mdmClientId">Client id</label>
+				<input id="mdmClientId" autocomplete="off">
+				<label for="mdmClientSecret">Client secret</label>
+				<input id="mdmClientSecret" type="password" autocomplete="off">
+				<p class="hint">Open the <a href="https://console.trimble-transportation.com/accounts/2a3b6572-608b-4b46-ac97-ae516d1b9c2a/access-key-detail/d86faa30-2a20-4850-b041-bc167bb5abd9" target="_blank" rel="noreferrer">access key in Console</a>, Secrets section. Consumer key is the client id. Consumer Secret 1 is the client secret.</p>
+				<div class="actions">
+					<button type="button" id="checkAccount">Check in MDM</button>
+				</div>
+				<div id="companyResult"></div>
+			</section>
+			<section data-panel="tid" hidden>
+				<h2>Account TID</h2>
+				<p id="tidIntro" class="hint"></p>
+				<div class="choices">
+					<label class="check"><input type="radio" name="tidChoice" value="known"> I know the TTC account id</label>
+					<label class="check"><input type="radio" name="tidChoice" value="missing" checked> The TTC account is not created yet</label>
+				</div>
+				<div id="knownTtc" hidden>
+					<label for="ttcAccountUuid">TTC account id</label>
+					<input id="ttcAccountUuid" autocomplete="off">
+					<div class="actions">
+						<button type="button" id="patchMessage">Prepare the MDM message</button>
+					</div>
+				</div>
+				<div id="missingTtc">
+					<p class="hint">Raise a DEVSERVICE ticket to Team Cotton. They create the TTC account. MDM then writes that id as the account TID.</p>
+					<div class="actions">
+						<button type="button" id="cottonMessage">Prepare the Cotton message</button>
+					</div>
+				</div>
+				<div class="actions">
+					<button type="button" id="recheck" class="secondary">Check MDM again</button>
+				</div>
+				<div id="tidResult"></div>
+			</section>
+			<section data-panel="people" hidden>
+				<h2>People</h2>
+				<p class="hint">Check one person by email or by Trimble Identity id. The result shows whether they are on this company, and the relation when they are.</p>
+				<label for="person">Email or Trimble Identity id</label>
+				<input id="person" autocomplete="off">
+				<div class="actions">
+					<button type="button" id="checkPeople">Check person</button>
+				</div>
+				<div id="peopleResult"></div>
+			</section>
+			<section data-panel="subscription" hidden>
+				<h2>Subscription</h2>
+				<label for="lemCredentials">LEM credentials</label>
+				<input id="lemCredentials" type="password" autocomplete="off">
+				<p class="hint">The base64 value the DTD team provides as LEM_SLM_CREDENTIALS. Request this from DTD team.</p>
+				<div id="subscriptionFacts" class="result ready" hidden></div>
+				<div class="actions">
+					<button type="button" id="licenseButton">Enable DTD subscription</button>
+				</div>
+				<label for="userAccessToken">DTD session Bearer</label>
+				<input id="userAccessToken" type="password" autocomplete="off">
+				<p class="hint">Optional. Paste the signed-in user's Bearer to check the product.</p>
+				<div class="actions">
+					<button type="button" id="signInButton" class="secondary">Check sign-in</button>
+				</div>
+				<div id="subscriptionResult"></div>
+			</section>
+		</form>
+	</main>
+	<script src="renderer.js"></script>
+</body>
+</html>
