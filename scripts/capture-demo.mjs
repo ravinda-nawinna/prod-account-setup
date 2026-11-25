@@ -7,6 +7,8 @@ import puppeteer from "puppeteer-core";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = path.join(root, "demo", "frames");
 const electronExe = path.join(root, "node_modules", "electron", "dist", "electron.exe");
+const clientId = "d86faa30-2a20-4850-b041-bc167bb5abd9";
+const demoTtc = "00000000-0000-4000-8000-00000000demo";
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function waitForDebugPort(port, tries = 60) {
@@ -30,7 +32,26 @@ async function shot(page, name, caption) {
 	fs.writeFileSync(path.join(outDir, `${name}.txt`), caption, "utf8");
 }
 
+async function openCompany(page) {
+	await page.click('.stepper li[data-step="company"] button');
+	await delay(350);
+}
+
+async function fillCredentials(page, tpa) {
+	await page.evaluate((values) => {
+		document.getElementById("tpa").value = values.tpa;
+		document.getElementById("mdmClientId").value = values.clientId;
+		document.getElementById("mdmClientSecret").value = "demo-only-not-a-real-secret";
+	}, { tpa, clientId });
+}
+
+async function checkMdm(page) {
+	await page.click("#checkAccount");
+	await delay(1100);
+}
+
 async function main() {
+	fs.rmSync(outDir, { recursive: true, force: true });
 	fs.mkdirSync(outDir, { recursive: true });
 	const port = 9333;
 	const child = spawn(electronExe, ["."], {
@@ -50,35 +71,59 @@ async function main() {
 	});
 	const page = (await browser.pages())[0] || (await browser.newPage());
 	await page.waitForSelector("#tpa", { timeout: 15000 });
-	await page.evaluate(() => {
-		document.getElementById("tpa").value = "611521";
-		document.getElementById("mdmClientId").value = "d86faa30-2a20-4850-b041-bc167bb5abd9";
-		document.getElementById("mdmClientSecret").value = "demo-only-not-a-real-secret";
-	});
-	await shot(page, "01-company-filled.png", "Step 1 — Enter the company number (TPA) and MDM client credentials from Console.");
-	await page.click("#checkAccount");
-	await delay(1200);
-	await shot(page, "02-company-verified.png", "Check in MDM — account facts appear when the company is already in MDM.");
+
+	await fillCredentials(page, "111111");
+	await shot(page, "01-company-111111.png", "Step 1 — Unknown company (111111): enter TPA and MDM credentials, then Check in MDM.");
+	await checkMdm(page);
+	await shot(page, "02-company-111111-missing.png", "When MDM has no account, copy the message for the MDM team to create it.");
+
+	await openCompany(page);
+	await fillCredentials(page, "659592");
+	await checkMdm(page);
+	await shot(page, "03-tid-659592-choices.png", "Step 2 — Company 659592 has an account but no TID. Choose whether you know the TTC account id.");
+
+	await page.click('input[name="tidChoice"][value="known"]');
+	await delay(250);
+	await page.evaluate((uuid) => {
+		document.getElementById("ttcAccountUuid").value = uuid;
+	}, demoTtc);
+	await shot(page, "04-tid-known-ttc.png", "Option A — I know the TTC account id: prepare the MDM patch message.");
+	await page.click("#patchMessage");
+	await delay(700);
+	await shot(page, "05-tid-mdm-message.png", "Message for MDM to write the TTC UUID as the account TID.");
+
+	await page.click('input[name="tidChoice"][value="missing"]');
+	await delay(250);
+	await shot(page, "06-tid-missing-ttc.png", "Option B — TTC account not created yet: raise DEVSERVICE to Team Cotton.");
+	await page.click("#cottonMessage");
+	await delay(700);
+	await shot(page, "07-tid-cotton-message.png", "Message for Team Cotton to create the TTC account.");
+
+	await openCompany(page);
+	await fillCredentials(page, "611521");
+	await checkMdm(page);
+	await shot(page, "08-company-611521-ready.png", "Step 1 — Company 611521: MDM account with TID already set.");
 	await page.click('.stepper li[data-step="tid"] button');
-	await delay(500);
-	await shot(page, "03-account-tid.png", "Step 2 — Account TID: when TID is missing, copy messages for MDM or Team Cotton. When TID is set, continue to People.");
-	await page.click('.stepper li[data-step="people"] button');
 	await delay(400);
+	await shot(page, "09-tid-611521-set.png", "Account TID is already on the company — continue to People.");
+	await page.click('.stepper li[data-step="people"] button');
+	await delay(350);
 	await page.evaluate(() => {
 		document.getElementById("person").value = "ed001ae3-dbb6-4a07-a595-4fe3b0d13490";
 	});
-	await shot(page, "04-people-ready.png", "Step 3 — People: look up one user by email or Trimble Identity id.");
+	await shot(page, "10-people-check.png", "Step 3 — Check one person by email or Trimble Identity id.");
 	await page.click("#checkPeople");
 	await delay(800);
-	await shot(page, "05-people-result.png", "The app shows whether they are on this company and their relation.");
+	await shot(page, "11-people-result.png", "Green means the user is on the company with an admin relation.");
 	await page.click('.stepper li[data-step="subscription"] button');
-	await delay(500);
+	await delay(400);
 	await page.evaluate(() => {
 		document.getElementById("lemCredentials").value = "ZGVtby1sZW0tY3JlZGVudGlhbHM=";
 		document.getElementById("lemCredentials").dispatchEvent(new Event("change", { bubbles: true }));
 	});
 	await delay(1000);
-	await shot(page, "06-subscription.png", "Step 4 — Subscription: LEM credentials, license status, and optional sign-in check.");
+	await shot(page, "12-subscription-611521.png", "Step 4 — LEM credentials, subscription status, and optional sign-in check.");
+
 	await browser.close();
 	child.kill();
 	console.log(`Captured frames in ${outDir}`);
