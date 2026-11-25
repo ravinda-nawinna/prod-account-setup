@@ -58,16 +58,19 @@ async function main() {
 	await shot(page, "01-company-filled.png", "Step 1 — Enter the company number (TPA) and MDM client credentials from Console.");
 	await page.click("#checkAccount");
 	await delay(1200);
-	await shot(page, "02-company-verified.png", "Check in MDM — account facts appear when the company is already in MDM with a TID.");
+	await shot(page, "02-company-verified.png", "Check in MDM — account facts appear when the company is already in MDM.");
+	await page.click('.stepper li[data-step="tid"] button');
+	await delay(500);
+	await shot(page, "03-account-tid.png", "Step 2 — Account TID: when TID is missing, copy messages for MDM or Team Cotton. When TID is set, continue to People.");
 	await page.click('.stepper li[data-step="people"] button');
 	await delay(400);
 	await page.evaluate(() => {
 		document.getElementById("person").value = "ed001ae3-dbb6-4a07-a595-4fe3b0d13490";
 	});
-	await shot(page, "03-people-ready.png", "Step 3 — People: look up one user by email or Trimble Identity id.");
+	await shot(page, "04-people-ready.png", "Step 3 — People: look up one user by email or Trimble Identity id.");
 	await page.click("#checkPeople");
 	await delay(800);
-	await shot(page, "04-people-result.png", "The app shows whether they are on this company and their relation.");
+	await shot(page, "05-people-result.png", "The app shows whether they are on this company and their relation.");
 	await page.click('.stepper li[data-step="subscription"] button');
 	await delay(500);
 	await page.evaluate(() => {
@@ -75,7 +78,7 @@ async function main() {
 		document.getElementById("lemCredentials").dispatchEvent(new Event("change", { bubbles: true }));
 	});
 	await delay(1000);
-	await shot(page, "05-subscription.png", "Step 4 — Subscription: LEM credentials, license status, and optional sign-in check.");
+	await shot(page, "06-subscription.png", "Step 4 — Subscription: LEM credentials, license status, and optional sign-in check.");
 	await browser.close();
 	child.kill();
 	console.log(`Captured frames in ${outDir}`);
