@@ -1,7 +1,14 @@
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const fs = require("fs");
 const path = require("path");
-const api = require("./api");
+
+const demoMode = process.env.DEMO_MODE === "1";
+const api = demoMode ? require("./demo-api") : require("./api");
+
+if (demoMode) {
+	app.setPath("userData", path.join(app.getPath("appData"), "prod-account-setup-demo"));
+	app.commandLine.appendSwitch("remote-debugging-port", "9333");
+}
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {

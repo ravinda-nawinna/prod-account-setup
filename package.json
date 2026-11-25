@@ -7,11 +7,18 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
+    "start:demo": "cross-env DEMO_MODE=1 electron .",
+    "demo:capture": "node scripts/capture-demo.mjs",
+    "demo:video": "node scripts/build-demo-video.mjs",
+    "demo:build": "npm run demo:capture && npm run demo:video",
     "dist": "electron-builder --publish never"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "electron": "^33.4.11",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "ffmpeg-static": "^5.2.0",
+    "puppeteer-core": "^24.2.0"
   },
   "build": {
     "appId": "com.trimble.transportation.prod-account-setup",

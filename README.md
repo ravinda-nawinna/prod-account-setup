@@ -17,6 +17,19 @@ Credentials are saved in the Electron user data folder on this computer.
 
 The latest Windows portable executable, macOS app archive, and Linux AppImage are on the [latest release](https://github.com/ravinda-nawinna/prod-account-setup/releases/tag/latest). These builds are not code-signed.
 
+## Demo video
+
+A short walkthrough built from scripted screenshots (no production API calls) lives at [demo/prod-account-setup-demo.mp4](demo/prod-account-setup-demo.mp4). Narration text is in [demo/VOICEOVER.md](demo/VOICEOVER.md).
+
+Regenerate locally:
+
+```powershell
+npm install
+npm run demo:build
+```
+
+Try the UI in demo mode without calling MDM: `npm run start:demo`.
+
 ## What you fill in
 
 - Company number (TPA) from TP Admin. The app checks MDM and continues to People when the account TID is already set.
