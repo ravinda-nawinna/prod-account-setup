@@ -13,6 +13,10 @@ npm start
 
 Credentials are saved in the Electron user data folder on this computer.
 
+## Download
+
+The latest Windows portable executable, macOS app archive, and Linux AppImage are on the [latest release](https://github.com/ravinda-nawinna/prod-account-setup/releases/tag/latest). These builds are not code-signed.
+
 ## What you fill in
 
 - Company number (TPA) from TP Admin. The app checks MDM and continues to People when the account TID is already set.
