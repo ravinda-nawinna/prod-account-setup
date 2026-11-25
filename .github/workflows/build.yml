@@ -62,8 +62,9 @@ jobs:
             echo "No binaries found"
             exit 1
           fi
-          gh release delete latest --yes --cleanup-tag || true
+          gh release delete latest --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
           gh release create latest "${files[@]}" \
+            --repo "$GITHUB_REPOSITORY" \
             --title "Latest" \
             --notes "Windows portable executable, macOS app archive, and Linux AppImage. These builds are not code-signed." \
             --latest
