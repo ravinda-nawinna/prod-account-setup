@@ -19,7 +19,7 @@ The latest Windows portable executable, macOS app archive, and Linux AppImage ar
 
 ## Demo video
 
-A short **silent** walkthrough built from scripted screenshots (no production API calls) lives at [demo/prod-account-setup-demo.mp4](demo/prod-account-setup-demo.mp4). To add narration, use the script in [demo/VOICEOVER.md](demo/VOICEOVER.md) and record in Clipchamp, PowerPoint, or a live screen capture.
+A short walkthrough with **on-screen captions** on every frame (no production API calls) lives at [demo/prod-account-setup-demo.mp4](demo/prod-account-setup-demo.mp4). Optional spoken narration notes are in [demo/VOICEOVER.md](demo/VOICEOVER.md).
 
 Regenerate locally:
 
