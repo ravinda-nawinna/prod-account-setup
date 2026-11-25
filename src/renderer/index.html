@@ -76,9 +76,10 @@
 				<input id="lemCredentials" type="password" autocomplete="off">
 				<p class="hint">The base64 value the DTD team provides as LEM_SLM_CREDENTIALS. Request this from DTD team.</p>
 				<div id="subscriptionFacts" class="result ready" hidden></div>
-				<div class="actions">
+				<div class="actions" id="licenseActions">
 					<button type="button" id="licenseButton">Enable DTD subscription</button>
 				</div>
+				<p id="subscriptionLicensedNote" class="hint licensed-note" hidden>Already licensed. Enable DTD subscription stays hidden while the account has an active subscription.</p>
 				<label for="userAccessToken">DTD session Bearer</label>
 				<input id="userAccessToken" type="password" autocomplete="off">
 				<p class="hint">Optional. Paste the signed-in user's Bearer to check the product.</p>

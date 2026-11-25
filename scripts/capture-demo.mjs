@@ -116,13 +116,19 @@ async function main() {
 	await delay(800);
 	await shot(page, "11-people-result.png", "Green means the user is on the company with an admin relation.");
 	await page.click('.stepper li[data-step="subscription"] button');
-	await delay(400);
+	await delay(500);
+	await page.evaluate(() => {
+		document.getElementById("lemCredentials").value = "";
+		document.getElementById("lemCredentials").dispatchEvent(new Event("change", { bubbles: true }));
+	});
+	await delay(700);
+	await shot(page, "12-subscription-enable.png", "Step 4 — Subscription: Enable DTD subscription appears when LEM credentials are missing or the account is not licensed yet.");
 	await page.evaluate(() => {
 		document.getElementById("lemCredentials").value = "ZGVtby1sZW0tY3JlZGVudGlhbHM=";
 		document.getElementById("lemCredentials").dispatchEvent(new Event("change", { bubbles: true }));
 	});
-	await delay(1000);
-	await shot(page, "12-subscription-611521.png", "Step 4 — LEM credentials, subscription status, and optional sign-in check.");
+	await delay(1200);
+	await shot(page, "13-subscription-already-licensed.png", "When the account already has an active subscription, Enable is hidden and Yard Documents is linked.");
 
 	await browser.close();
 	child.kill();

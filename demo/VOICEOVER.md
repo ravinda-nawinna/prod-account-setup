@@ -16,4 +16,4 @@ Demo companies in the video:
 
 2. **659592** — “When the account exists but has no TID, step two opens. If you already have the TTC account id, prepare the MDM message. If not, prepare the Cotton DEVSERVICE message.”
 
-3. **611521** — “When the TID is already there, skip straight to People and Subscription. Check admins, paste LEM credentials, and confirm the product is licensed.”
+3. **611521** — “When the TID is already there, check People, then Subscription. You see Enable DTD subscription until LEM credentials are entered. For 611521 the subscription is already active, so Enable disappears and the Yard Documents link appears.”

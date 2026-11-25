@@ -138,9 +138,11 @@ function renderSubscriptionBox(extraLines, licensed) {
 
 async function refreshSubscription() {
 	const button = document.getElementById("licenseButton");
+	const licensedNote = document.getElementById("subscriptionLicensedNote");
 	const showEnable = (visible) => {
 		button.hidden = !visible;
-		button.closest(".actions").hidden = !visible;
+		document.getElementById("licenseActions").hidden = !visible;
+		licensedNote.hidden = visible;
 	};
 	if (!value("lemCredentials")) {
 		renderSubscriptionBox([], false);
